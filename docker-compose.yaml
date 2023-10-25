@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  tomcat:
+    build: ./tomcat
+    volumes:
+      - ./tomcat/conf/context.xml:/usr/local/tomcat/conf/context.xml:delegated,rw
+      - ./tomcat/conf/web.xml:/usr/local/tomcat/conf/web.xml:delegated,rw
+    ports:
+      - "8080:8080"
