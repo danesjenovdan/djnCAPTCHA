@@ -6,6 +6,7 @@ services:
     volumes:
       - ./tomcat/conf/context.xml:/usr/local/tomcat/conf/context.xml:delegated,rw
       - ./tomcat/conf/web.xml:/usr/local/tomcat/conf/web.xml:delegated,rw
+      - ./tomcat/fonts.conf:/root/.config/fontconfig/fonts.conf:delegated,rw
     # ports:
     #   - "8080:8080"
 
