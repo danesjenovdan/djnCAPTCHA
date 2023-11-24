@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: djncaptcha-nginx
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-production"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - captcha.lb.djnd.si
+      secretName: djncaptcha-nginx-tls
+  rules:
+    - host: captcha.lb.djnd.si
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: djncaptcha-nginx
+                port:
+                  number: 80
