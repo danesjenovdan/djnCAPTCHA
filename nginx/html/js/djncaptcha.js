@@ -155,12 +155,13 @@
     audio.style.cursor = "not-allowed";
     buttonsContainer.appendChild(audio);
 
+    let captchaId = null;
     let audioSrc = null;
     let audioCaptcha = null;
 
     function insertCaptchaImage(data) {
+      captchaId = data.captchaId;
       img.src = `data:image/png;base64,${data.captchaImg}`;
-      img.dataset.captchaId = data.captchaId;
       img.alt = "CAPTCHA";
       input.value = "";
       refresh.disabled = false;
@@ -181,7 +182,7 @@
     refresh.addEventListener("click", () => {
       refresh.disabled = true;
       refresh.style.opacity = "0.5";
-      const previousCaptchaId = img.dataset.captchaId;
+      const previousCaptchaId = captchaId;
       fetch(`/api/reloadCaptchaImg/${previousCaptchaId}?locale=en-GB`)
         .then((response) => response.json())
         .then((data) => {
@@ -216,7 +217,7 @@
 
     input.addEventListener("input", (event) => {
       const value = event.target.value;
-      hiddenInput.value = value;
+      hiddenInput.value = `${captchaId};${value}`;
     });
 
     fetch("/api/captchaImg?locale=en-GB")
