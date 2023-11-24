@@ -1,7 +1,26 @@
 (function () {
+  const MESSAGES = {
+    en: {
+      captchaLoading: "CAPTCHA challenge loading ...",
+      captchaRefresh: "Refresh captcha",
+      captchaAudio: "Play audio captcha",
+      captchaStop: "Stop audio captcha",
+      captchaType: "type the characters above",
+    },
+    sl: {
+      captchaLoading: "Izziv CAPTCHA se nalaga ...",
+      captchaRefresh: "Osveži izziv CAPTCHA",
+      captchaAudio: "Predvajaj zvočni izziv CAPTCHA",
+      captchaStop: "Ustavi zvočni izziv CAPTCHA",
+      captchaType: "vnesi zgoraj prikazane znake",
+    },
+  };
+
   const me = document.currentScript;
   const inputName = me.dataset.inputName || "captcha-answer";
   const baseUrl = me.dataset.baseUrl || "https://captcha.lb.djnd.si";
+  const locale = me.dataset.locale || "en";
+  const msgs = MESSAGES[locale] || MESSAGES["en"];
 
   let container = null;
   if (
@@ -71,7 +90,7 @@
     img.style.width = "250px";
     img.style.height = "125px";
     img.src = "data:image/png;base64,";
-    img.alt = "CAPTCHA Loading ...";
+    img.alt = msgs.captchaLoading;
     imgWrapper.appendChild(img);
 
     const inputForm = doc.createElement("form");
@@ -82,16 +101,16 @@
     const input = doc.createElement("input");
     input.type = "text";
     input.value = "";
-    input.placeholder = "type the characters above";
+    input.placeholder = msgs.captchaType;
     input.style.boxSizing = "border-box";
     input.style.width = "100%";
     input.style.padding = "0 6px";
     input.style.backgroundColor = "white";
     input.style.border = "1px solid #888";
     input.style.borderRadius = "0 0 8px 8px";
-    input.style.fontFamily = "monospace";
+    input.style.fontFamily = "'Segoe UI', Helvetica, Arial, sans-serif";
     input.style.fontSize = "16px";
-    input.style.fontWeight = "bold";
+    input.style.fontWeight = "400";
     input.style.height = "32px";
     input.style.lineHeight = "32px";
     inputForm.appendChild(input);
@@ -132,7 +151,7 @@
         </svg>
       `
     );
-    refresh.title = "Refresh captcha";
+    refresh.title = msgs.captchaRefresh;
     refresh.disabled = true;
     refresh.style.opacity = "0.5";
     refresh.style.cursor = "not-allowed";
@@ -150,7 +169,7 @@
     `;
 
     const audio = createButton("Audio", audioIcon);
-    audio.title = "Play audio captcha";
+    audio.title = msgs.captchaAudio;
     audio.disabled = true;
     audio.style.opacity = "0.5";
     audio.style.cursor = "not-allowed";
@@ -175,7 +194,7 @@
       if (audioCaptcha) {
         audioCaptcha.pause();
         audioCaptcha = null;
-        audio.title = "Play audio captcha";
+        audio.title = msgs.captchaAudio;
         audio.querySelector(".icon").innerHTML = audioIcon;
       }
       audio.disabled = false;
@@ -200,11 +219,11 @@
       if (audioCaptcha) {
         audioCaptcha.pause();
         audioCaptcha = null;
-        audio.title = "Play audio captcha";
+        audio.title = msgs.captchaAudio;
         audio.querySelector(".icon").innerHTML = audioIcon;
         return;
       }
-      audio.title = "Stop audio captcha";
+      audio.title = msgs.captchaStop;
       audio.querySelector(".icon").innerHTML = stopIcon;
       audioCaptcha = new Audio(audioSrc);
       audioCaptcha.currentTime = 0;
@@ -212,7 +231,7 @@
       input.focus();
       audioCaptcha.addEventListener("ended", () => {
         audioCaptcha = null;
-        audio.title = "Play audio captcha";
+        audio.title = msgs.captchaAudio;
         audio.querySelector(".icon").innerHTML = audioIcon;
       });
     });
