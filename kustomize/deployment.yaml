@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: djncaptcha
+  labels:
+    app: djncaptcha
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: djncaptcha
+  template:
+    metadata:
+      labels:
+        app: djncaptcha
+    spec:
+      containers:
+        - name: djncaptcha-tomcat
+          image: djncaptcha-tomcat
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+        - name: djncaptcha-nginx
+          image: djncaptcha-nginx
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
