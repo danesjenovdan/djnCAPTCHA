@@ -17,6 +17,6 @@ services:
       - ./nginx/conf.d/default.dev.conf:/etc/nginx/conf.d/default.conf:delegated,rw
       - ./nginx/html:/usr/share/nginx/html:delegated,rw
     ports:
-      - "8000:80"
+      - "8000:8000"
     depends_on:
       - tomcat
