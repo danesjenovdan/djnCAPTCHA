@@ -157,6 +157,7 @@
     buttonsContainer.appendChild(audio);
 
     let captchaId = null;
+    let captchaInput = "";
     let audioSrc = null;
     let audioCaptcha = null;
 
@@ -165,6 +166,8 @@
       img.src = `data:image/png;base64,${data.captchaImg}`;
       img.alt = "CAPTCHA";
       input.value = "";
+      captchaInput = "";
+      hiddenInput.value = `${captchaId};`;
       refresh.disabled = false;
       refresh.style.opacity = "1";
       refresh.style.cursor = "pointer";
@@ -180,7 +183,7 @@
       audio.style.cursor = "pointer";
     }
 
-    refresh.addEventListener("click", () => {
+    function reloadCaptchaImage() {
       refresh.disabled = true;
       refresh.style.opacity = "0.5";
       const previousCaptchaId = captchaId;
@@ -189,7 +192,9 @@
         .then((data) => {
           insertCaptchaImage(data);
         });
-    });
+    }
+
+    refresh.addEventListener("click", reloadCaptchaImage);
 
     audio.addEventListener("click", () => {
       if (audioCaptcha) {
@@ -217,8 +222,8 @@
     });
 
     input.addEventListener("input", (event) => {
-      const value = event.target.value;
-      hiddenInput.value = `${captchaId};${value}`;
+      captchaInput = event.target.value;
+      hiddenInput.value = `${captchaId};${captchaInput}`;
     });
 
     fetch(`${baseUrl}/api/captchaImg?locale=en-GB`)
@@ -226,6 +231,28 @@
       .then((data) => {
         insertCaptchaImage(data);
       });
+
+    window.djnCAPTCHA = window.djnCAPTCHA || {};
+    window.djnCAPTCHA[inputName] = {
+      value: () => {
+        return `${captchaId};${captchaInput}`;
+      },
+      reload: () => {
+        reloadCaptchaImage();
+      },
+      remove: () => {
+        if (container) {
+          container.remove();
+          container = null;
+        }
+        if (me.parentElement) {
+          me.remove();
+        }
+        if (window.djnCAPTCHA[inputName]) {
+          delete window.djnCAPTCHA[inputName];
+        }
+      },
+    };
   });
 
   container.appendChild(iframe);
