@@ -1,6 +1,7 @@
 (function () {
   const me = document.currentScript;
   const inputName = me.dataset.inputName || "captcha-answer";
+  const baseUrl = me.dataset.baseUrl || "https://captcha.lb.djnd.si";
 
   let container = null;
   if (
@@ -183,7 +184,7 @@
       refresh.disabled = true;
       refresh.style.opacity = "0.5";
       const previousCaptchaId = captchaId;
-      fetch(`/api/reloadCaptchaImg/${previousCaptchaId}?locale=en-GB`)
+      fetch(`${baseUrl}/api/reloadCaptchaImg/${previousCaptchaId}?locale=en-GB`)
         .then((response) => response.json())
         .then((data) => {
           insertCaptchaImage(data);
@@ -220,7 +221,7 @@
       hiddenInput.value = `${captchaId};${value}`;
     });
 
-    fetch("/api/captchaImg?locale=en-GB")
+    fetch(`${baseUrl}/api/captchaImg?locale=en-GB`)
       .then((response) => response.json())
       .then((data) => {
         insertCaptchaImage(data);
