@@ -8,7 +8,7 @@ resources:
 images:
   - name: djncaptcha-tomcat
     newName: rg.fr-par.scw.cloud/djnd/djncaptcha-tomcat
-    newTag: "latest"
+    newTag: '07373cc9c88417f0d04cee6a2e3a6885ea0853f7'
   - name: djncaptcha-nginx
     newName: rg.fr-par.scw.cloud/djnd/djncaptcha-nginx
-    newTag: "latest"
+    newTag: '07373cc9c88417f0d04cee6a2e3a6885ea0853f7'
