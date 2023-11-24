@@ -25,5 +25,5 @@ spec:
           image: djncaptcha-nginx
           ports:
             - name: http
-              containerPort: 8000
+              containerPort: 80
               protocol: TCP
