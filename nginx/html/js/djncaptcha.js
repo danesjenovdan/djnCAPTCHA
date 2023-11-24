@@ -1,7 +1,6 @@
 (function () {
   const me = document.currentScript;
-  // const form = me.closest("form");
-  // const submit = form.querySelector('button[type="submit"]');
+  const inputName = me.dataset.inputName || "captcha-answer";
 
   let container = null;
   if (
@@ -16,13 +15,18 @@
     me.parentNode.insertBefore(container, me);
   }
 
+  const hiddenInput = document.createElement("input");
+  hiddenInput.type = "hidden";
+  hiddenInput.name = inputName;
+  hiddenInput.value = "";
+  container.appendChild(hiddenInput);
+
   const iframe = document.createElement("iframe");
   iframe.style.display = "block";
-  iframe.style.width = "332px";
+  iframe.style.width = "322px";
   iframe.style.height = "185px";
   iframe.style.backgroundColor = "transparent";
   iframe.style.border = "0";
-  container.appendChild(iframe);
 
   iframe.addEventListener("load", () => {
     const doc = iframe.contentWindow.document;
@@ -33,8 +37,8 @@
     wrapper.style.display = "flex";
     wrapper.style.padding = "10px";
     wrapper.style.backgroundColor = "white";
-    wrapper.style.border = "1px solid #ccc";
-    wrapper.style.borderRadius = "5px";
+    wrapper.style.border = "1px solid #888";
+    wrapper.style.borderRadius = "8px";
     doc.body.appendChild(wrapper);
 
     const imgContainer = doc.createElement("div");
@@ -43,77 +47,61 @@
 
     const buttonsContainer = doc.createElement("div");
     buttonsContainer.style.boxSizing = "border-box";
-    buttonsContainer.style.flex = "0 0 60px";
+    buttonsContainer.style.flex = "0 0 50px";
     buttonsContainer.style.display = "flex";
     buttonsContainer.style.flexDirection = "column";
-    buttonsContainer.style.justifyContent = "space-around";
+    buttonsContainer.style.justifyContent = "flex-start";
+    buttonsContainer.style.gap = "4px";
     buttonsContainer.style.paddingLeft = "10px";
     wrapper.appendChild(buttonsContainer);
 
+    const imgWrapper = doc.createElement("div");
+    imgWrapper.style.boxSizing = "border-box";
+    imgWrapper.style.position = "relative";
+    imgWrapper.style.width = "250px";
+    imgWrapper.style.height = "125px";
+    imgWrapper.style.border = "1px solid #888";
+    imgWrapper.style.borderRadius = "8px 8px 0 0";
+    imgWrapper.style.overflow = "hidden";
+    imgContainer.appendChild(imgWrapper);
+
     const img = doc.createElement("img");
+    img.style.margin = "-1px";
     img.style.width = "250px";
     img.style.height = "125px";
     img.src = "data:image/png;base64,";
     img.alt = "CAPTCHA Loading ...";
-    imgContainer.appendChild(img);
+    imgWrapper.appendChild(img);
 
     const inputForm = doc.createElement("form");
     inputForm.style.display = "flex";
-    inputForm.style.margin = "10px 0 0 0";
+    inputForm.style.margin = "4px 0 0 0";
     imgContainer.appendChild(inputForm);
 
     const input = doc.createElement("input");
     input.type = "text";
     input.value = "";
+    input.placeholder = "type the characters above";
     input.style.boxSizing = "border-box";
     input.style.width = "100%";
     input.style.padding = "0 6px";
     input.style.backgroundColor = "white";
-    input.style.border = "1px solid #333";
+    input.style.border = "1px solid #888";
+    input.style.borderRadius = "0 0 8px 8px";
     input.style.fontFamily = "monospace";
-    input.style.fontSize = "18px";
+    input.style.fontSize = "16px";
     input.style.fontWeight = "bold";
-    input.style.height = "28px";
-    input.style.lineHeight = "28px";
+    input.style.height = "32px";
+    input.style.lineHeight = "32px";
     inputForm.appendChild(input);
-
-    const submit = doc.createElement("button");
-    submit.type = "submit";
-    submit.style.flex = "0 0 28px";
-    submit.style.boxSizing = "border-box";
-    submit.style.position = "relative";
-    submit.style.padding = "0";
-    submit.style.marginLeft = "-1px";
-    submit.style.background = "transparent";
-    submit.style.border = "1px solid #333";
-    submit.style.height = "28px";
-    submit.style.cursor = "pointer";
-    {
-      const span = doc.createElement("span");
-      span.textContent = "Verify Captcha";
-      span.style.display = "block";
-      span.style.textIndent = "-9999px";
-      submit.appendChild(span);
-      const icon = doc.createElement("div");
-      icon.style.position = "absolute";
-      icon.style.inset = "4px";
-      icon.style.color = "#000";
-      icon.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
-          <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z"/>
-        </svg>
-      `;
-      submit.appendChild(icon);
-    }
-    inputForm.appendChild(submit);
 
     function createButton(text, svg) {
       const button = doc.createElement("button");
       button.type = "button";
       button.style.boxSizing = "border-box";
       button.style.position = "relative";
-      button.style.width = "50px";
-      button.style.height = "50px";
+      button.style.width = "40px";
+      button.style.height = "40px";
       button.style.padding = "0";
       button.style.background = "transparent";
       button.style.border = "1px solid #333";
@@ -125,6 +113,7 @@
       span.style.textIndent = "-9999px";
       button.appendChild(span);
       const icon = doc.createElement("div");
+      icon.classList.add("icon");
       icon.style.position = "absolute";
       icon.style.inset = "8px";
       icon.style.color = "#000";
@@ -142,24 +131,32 @@
         </svg>
       `
     );
+    refresh.title = "Refresh captcha";
     refresh.disabled = true;
     refresh.style.opacity = "0.5";
     refresh.style.cursor = "not-allowed";
     buttonsContainer.appendChild(refresh);
 
-    const audio = createButton(
-      "Audio",
-      `
-        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
-          <path d="M8 3a5 5 0 0 0-5 5v1h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V8a6 6 0 1 1 12 0v5a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1V8a5 5 0 0 0-5-5z"/>
-        </svg>
-      `
-    );
-    // TODO: enable audio fallback
+    const audioIcon = `
+      <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M8 3a5 5 0 0 0-5 5v1h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V8a6 6 0 1 1 12 0v5a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1V8a5 5 0 0 0-5-5z"/>
+      </svg>
+    `;
+    const stopIcon = `
+      <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M5 3.5h6A1.5 1.5 0 0 1 12.5 5v6a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 11V5A1.5 1.5 0 0 1 5 3.5"/>
+      </svg>
+    `;
+
+    const audio = createButton("Audio", audioIcon);
+    audio.title = "Play audio captcha";
     audio.disabled = true;
     audio.style.opacity = "0.5";
     audio.style.cursor = "not-allowed";
     buttonsContainer.appendChild(audio);
+
+    let audioSrc = null;
+    let audioCaptcha = null;
 
     function insertCaptchaImage(data) {
       img.src = `data:image/png;base64,${data.captchaImg}`;
@@ -169,9 +166,19 @@
       refresh.disabled = false;
       refresh.style.opacity = "1";
       refresh.style.cursor = "pointer";
+      audioSrc = `data:audio/wav;base64,${data.audioCaptcha}`;
+      if (audioCaptcha) {
+        audioCaptcha.pause();
+        audioCaptcha = null;
+        audio.title = "Play audio captcha";
+        audio.querySelector(".icon").innerHTML = audioIcon;
+      }
+      audio.disabled = false;
+      audio.style.opacity = "1";
+      audio.style.cursor = "pointer";
     }
 
-    refresh.addEventListener("click", function () {
+    refresh.addEventListener("click", () => {
       refresh.disabled = true;
       refresh.style.opacity = "0.5";
       const previousCaptchaId = img.dataset.captchaId;
@@ -182,24 +189,34 @@
         });
     });
 
-    inputForm.addEventListener("submit", function (event) {
+    audio.addEventListener("click", () => {
+      if (audioCaptcha) {
+        audioCaptcha.pause();
+        audioCaptcha = null;
+        audio.title = "Play audio captcha";
+        audio.querySelector(".icon").innerHTML = audioIcon;
+        return;
+      }
+      audio.title = "Stop audio captcha";
+      audio.querySelector(".icon").innerHTML = stopIcon;
+      audioCaptcha = new Audio(audioSrc);
+      audioCaptcha.currentTime = 0;
+      audioCaptcha.play();
+      input.focus();
+      audioCaptcha.addEventListener("ended", () => {
+        audioCaptcha = null;
+        audio.title = "Play audio captcha";
+        audio.querySelector(".icon").innerHTML = audioIcon;
+      });
+    });
+
+    inputForm.addEventListener("submit", (event) => {
       event.preventDefault();
-      submit.disabled = true;
-      const captchaId = img.dataset.captchaId;
-      const captchaAnswer = input.value;
-      fetch(
-        `/api/validateCaptcha/${captchaId}?captchaAnswer=${captchaAnswer}`,
-        { method: "POST" }
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.responseCaptcha === "success") {
-            console.log("success");
-          } else {
-            console.log("fail");
-          }
-          submit.disabled = false;
-        });
+    });
+
+    input.addEventListener("input", (event) => {
+      const value = event.target.value;
+      hiddenInput.value = value;
     });
 
     fetch("/api/captchaImg?locale=en-GB")
@@ -208,4 +225,6 @@
         insertCaptchaImage(data);
       });
   });
+
+  container.appendChild(iframe);
 })();
