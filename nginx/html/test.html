@@ -88,12 +88,24 @@
         <div class="form-field captcha-container">
           <label for="">djnCAPTCHA:</label>
           <div class="captcha">
-            <script src="/js/djncaptcha.js" data-input-name="captcha-test"></script>
+            <script
+              src="/js/djncaptcha.js"
+              data-input-name="captcha-test"
+              data-base-url="http://localhost:8000"
+            ></script>
           </div>
         </div>
 
-        <button type="submit" value="submit_1" disabled>Submit</button>
+        <button type="submit" value="submit_1">Submit</button>
       </form>
+
+      <script>
+        const form = document.querySelector("form");
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          window.djnCAPTCHA["captcha-test"].reload();
+        });
+      </script>
     </div>
   </body>
 </html>
